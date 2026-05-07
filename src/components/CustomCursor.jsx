@@ -67,25 +67,8 @@ const CustomCursor = () => {
   if (isMobile || !isVisible) return null;
 
   return (
-    <div className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-screen">
-      {/* Outer Ring with trailing effect */}
-      <motion.div
-        style={{
-          x: springX,
-          y: springY,
-          translateX: '-50%',
-          translateY: '-50%',
-        }}
-        animate={{
-          scale: isHovered ? 1.5 : 1,
-          width: isHovered ? 80 : 40,
-          height: isHovered ? 80 : 40,
-          backgroundColor: isHovered ? 'rgba(0, 229, 255, 0.1)' : 'rgba(0, 229, 255, 0.05)',
-        }}
-        className="rounded-full border-[1.5px] border-[#00e5ff] shadow-[0_0_15px_rgba(0,229,255,0.4)] backdrop-blur-[1px] flex items-center justify-center transition-colors duration-300"
-      />
-      
-      {/* Inner Glowing Dot */}
+    <div className="fixed top-0 left-0 pointer-events-none z-[9999]">
+      {/* Main Cursor Container */}
       <motion.div
         style={{
           x: mouseX,
@@ -93,11 +76,52 @@ const CustomCursor = () => {
           translateX: '-50%',
           translateY: '-50%',
         }}
-        animate={{
-          scale: isHovered ? 0.5 : 1,
-        }}
-        className="absolute top-0 left-0 w-2 h-2 bg-[#00e5ff] rounded-full shadow-[0_0_10px_#00e5ff,0_0_20px_#00e5ff]"
-      />
+        className="relative flex items-center justify-center"
+      >
+        {/* Outer Glow Ring */}
+        <motion.div
+          animate={{
+            scale: isHovered ? 2 : 1,
+            opacity: isHovered ? 0.3 : 0.15,
+            borderColor: 'rgba(var(--primary-rgb), 0.5)',
+          }}
+          transition={{ duration: 0.3 }}
+          className="absolute w-12 h-12 rounded-full border border-brand-primary/30 blur-[2px]"
+        />
+
+        {/* Primary Glow Disk */}
+        <motion.div
+          animate={{
+            scale: isHovered ? 1.5 : 1,
+            backgroundColor: 'rgba(var(--primary-rgb), 0.1)',
+          }}
+          transition={{ duration: 0.3 }}
+          className="absolute w-8 h-8 rounded-full blur-md"
+        />
+
+        {/* Inner Core Dot */}
+        <motion.div
+          animate={{
+            scale: isHovered ? 0.5 : 1,
+          }}
+          transition={{ duration: 0.2 }}
+          className="relative w-2.5 h-2.5 bg-brand-primary rounded-full shadow-[0_0_10px_var(--primary),0_0_20px_var(--primary)]"
+        />
+
+        {/* Trail Effect for Premium Feel */}
+        <motion.div
+          animate={{
+            scale: [1, 2],
+            opacity: [0.4, 0],
+          }}
+          transition={{
+            duration: 1,
+            repeat: Infinity,
+            ease: "easeOut"
+          }}
+          className="absolute w-6 h-6 border border-brand-primary/20 rounded-full"
+        />
+      </motion.div>
     </div>
   );
 };
