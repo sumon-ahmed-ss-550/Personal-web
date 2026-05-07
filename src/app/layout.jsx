@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Asif Mahmud | Full Stack Developer Portfolio",
+  title: "Sumon Ahmed | Front-End Web Developer",
   description: "I build exceptional and accessible digital experiences for the web. Turning complex problems into simple, beautiful, and intuitive solutions.",
 };
 

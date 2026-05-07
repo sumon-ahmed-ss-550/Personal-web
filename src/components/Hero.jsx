@@ -49,7 +49,7 @@ export default function Hero() {
             </div>
             <div className="overflow-hidden mb-4">
               <span ref={subtitleRef} className="text-xl md:text-2xl font-bold tracking-tight text-foreground block">
-                Full Stack <span className="text-brand-primary">Developer |</span>
+                Front-End Web <span className="text-brand-primary">Developer |</span>
               </span>
             </div>
             <div className="overflow-hidden mb-10">
