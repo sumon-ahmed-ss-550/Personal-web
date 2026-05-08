@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FileDown } from 'lucide-react';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -132,15 +133,14 @@ export default function Navbar() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <Link
-              href="#"
-              className="hidden xl:flex items-center gap-2 bg-brand-primary hover:opacity-90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-all"
+            <a
+              href="/cv/johan.jpg"
+              download="Johan_CV.jpg"
+              className="hidden xl:flex items-center gap-2 bg-brand-primary hover:opacity-90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-all shadow-lg shadow-brand-primary/20"
             >
               Download CV
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
-              </svg>
-            </Link>
+              <FileDown className="h-4 w-4" />
+            </a>
           </motion.div>
 
           <motion.button
@@ -225,16 +225,15 @@ export default function Navbar() {
                 transition={{ delay: 0.8 }}
                 className="mt-8 px-6 w-full max-w-xs"
               >
-                <Link
-                  href="#"
+                <a
+                  href="/cv/johan.jpg"
+                  download="Johan_CV.jpg"
                   className="flex items-center justify-center gap-3 bg-brand-primary hover:opacity-90 text-white px-8 py-5 rounded-2xl font-black text-xl transition-all shadow-2xl shadow-brand-primary/20"
                   onClick={() => setIsOpen(false)}
                 >
                   Download CV
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
-                  </svg>
-                </Link>
+                  <FileDown className="h-6 w-6" />
+                </a>
               </motion.li>
             </ul>
 
