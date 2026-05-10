@@ -66,7 +66,7 @@ export default function Projects() {
           </motion.div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, i) => (
             <motion.div 
               key={project.title} 
@@ -75,7 +75,9 @@ export default function Projects() {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.7, delay: i * 0.2 }}
               whileHover={{ y: -10 }}
-              className="card-glass rounded-3xl overflow-hidden group border border-white/5"
+              className={`card-glass rounded-3xl overflow-hidden group border border-white/5 ${
+                i === 2 ? 'md:col-span-2 lg:col-span-1 md:max-w-[calc(50%-16px)] md:mx-auto lg:max-w-none lg:mx-0' : ''
+              }`}
             >
               <div className="h-56 overflow-hidden relative">
                 <Image

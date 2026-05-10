@@ -42,7 +42,7 @@ export default function About() {
               </motion.div>
             </motion.div>
 
-            <div className="w-full md:w-[55%] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6">
+            <div className="w-full md:w-[60%] flex flex-col gap-4 md:gap-6 items-start">
               {[
                 { label: 'Name', value: 'Sumon Ahmed', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
                 { label: 'Email', value: 'entertainment54321@gmail.com', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
@@ -51,12 +51,15 @@ export default function About() {
               ].map((card, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.5, delay: i * 0.15 }}
                   whileHover={{ y: -5, scale: 1.02, borderColor: 'rgba(var(--primary-rgb), 0.3)' }}
-                  className="card-glass p-5 md:p-6 rounded-2xl flex flex-row items-center gap-4 transition-all border border-white/5 shadow-xl shadow-black/20 overflow-hidden"
+                  className="card-glass p-5 md:p-6 rounded-2xl flex flex-row items-center gap-4 transition-all border border-white/5 shadow-xl shadow-black/20 overflow-hidden w-full lg:w-[400px] lg:ml-[var(--offset)]"
+                  style={{ 
+                    '--offset': `${i * 5}vw`,
+                  }}
                 >
                   <div className="flex-shrink-0 w-12 h-12 bg-brand-primary/10 rounded-xl flex items-center justify-center text-brand-primary/80">
                     <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
