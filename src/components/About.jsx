@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+// import { useEffect, useRef } from "react";
 import Link from "next/link";
-import gsap from "gsap";
+// import gsap from "gsap";
 import { motion } from "framer-motion";
 
 export default function About() {
@@ -93,12 +93,12 @@ export default function About() {
                     scale: 1.02,
                     borderColor: "rgba(var(--primary-rgb), 0.3)",
                   }}
-                  className="card-glass p-5 md:p-6 rounded-2xl flex flex-row items-center gap-4 transition-all border border-white/5 shadow-xl shadow-black/20 overflow-hidden w-full lg:w-[400px] lg:ml-[var(--offset)]"
+                  className="card-glass p-5 md:p-6 rounded-2xl flex flex-row items-center gap-4 transition-all border border-white/5 shadow-xl shadow-black/20 overflow-hidden w-full lg:w-100 lg:ml-(--offset)"
                   style={{
                     "--offset": `${i * 5}vw`,
                   }}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 bg-brand-primary/10 rounded-xl flex items-center justify-center text-brand-primary/80">
+                  <div className="shrink-0 w-12 h-12 bg-brand-primary/10 rounded-xl flex items-center justify-center text-brand-primary/80">
                     <svg
                       className="h-6 w-6"
                       fill="none"
@@ -117,7 +117,7 @@ export default function About() {
                     <p className="text-[10px] text-brand-primary font-black uppercase tracking-widest mb-0.5">
                       {card.label}
                     </p>
-                    <p className="text-[13px] sm:text-sm md:text-base font-bold text-foreground break-all sm:break-words leading-tight">
+                    <p className="text-[13px] sm:text-sm md:text-base font-bold text-foreground break-all sm:wrap-break-word leading-tight">
                       {card.value}
                     </p>
                   </div>
