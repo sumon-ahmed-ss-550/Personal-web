@@ -20,11 +20,11 @@ export default function Contact() {
               Contact Me
             </span>
             <h2 className="text-4xl font-bold text-foreground mb-6">
-              Let's work together
+              Lets work together
             </h2>
             <p className="text-foreground/70 mb-10 text-lg leading-relaxed">
               Have a project in mind or want to work together? Feel free to
-              contact me. I'm always open to discussing new projects and
+              contact me. I am always open to discussing new projects and
               creative ideas.
             </p>
 

@@ -1,51 +1,51 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FileDown } from 'lucide-react';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { FileDown } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
-  const [theme, setTheme] = useState('dark');
+  const [activeSection, setActiveSection] = useState("home");
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
   }, [isOpen]);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const savedTheme = localStorage.getItem("theme") || "dark";
     setTheme(savedTheme);
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
+    localStorage.setItem("theme", newTheme);
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   };
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Contact', href: '#contact' },
+    { name: "Home", href: "#home" },
+    { name: "About", href: "#about" },
+    { name: "Skills", href: "#skills" },
+    { name: "Projects", href: "#projects" },
+    // { name: "Experience", href: "#experience" },
+    { name: "Contact", href: "#contact" },
   ];
 
   useEffect(() => {
@@ -55,11 +55,11 @@ export default function Navbar() {
       const scrollY = window.scrollY;
 
       if (innerHeight + scrollY >= scrollHeight - 100) {
-        setActiveSection('contact');
+        setActiveSection("contact");
         return;
       }
 
-      const sections = navLinks.map(link => link.href.substring(1));
+      const sections = navLinks.map((link) => link.href.substring(1));
       const scrollPosition = scrollY + 150;
 
       for (const section of sections) {
@@ -74,8 +74,8 @@ export default function Navbar() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -109,8 +109,11 @@ export default function Navbar() {
               >
                 <Link
                   href={link.href}
-                  className={`relative transition-all duration-300 ${isActive ? 'text-brand-primary/80' : 'text-gray-400 hover:text-foreground'
-                    }`}
+                  className={`relative transition-all duration-300 ${
+                    isActive
+                      ? "text-brand-primary/80"
+                      : "text-gray-400 hover:text-foreground"
+                  }`}
                   onClick={() => setActiveSection(link.href.substring(1))}
                 >
                   {link.name}
@@ -118,7 +121,11 @@ export default function Navbar() {
                     <motion.div
                       layoutId="nav-underline"
                       className="absolute -bottom-1 left-0 w-full h-0.5 bg-brand-primary rounded-full"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 380,
+                        damping: 30,
+                      }}
                     />
                   )}
                 </Link>
@@ -150,13 +157,33 @@ export default function Navbar() {
             className="p-2 text-foreground/50 hover:text-foreground transition-colors"
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? (
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
+            {theme === "dark" ? (
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></path>
               </svg>
             ) : (
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></path>
               </svg>
             )}
           </motion.button>
@@ -168,12 +195,32 @@ export default function Navbar() {
             aria-label="Toggle menu"
           >
             {isOpen ? (
-              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="h-8 w-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             ) : (
-              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
+              <svg
+                className="h-8 w-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
               </svg>
             )}
           </motion.button>
@@ -184,9 +231,9 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ clipPath: 'circle(0% at 0% 0%)', opacity: 0 }}
-            animate={{ clipPath: 'circle(150% at 0% 0%)', opacity: 1 }}
-            exit={{ clipPath: 'circle(0% at 0% 0%)', opacity: 0 }}
+            initial={{ clipPath: "circle(0% at 0% 0%)", opacity: 0 }}
+            animate={{ clipPath: "circle(150% at 0% 0%)", opacity: 1 }}
+            exit={{ clipPath: "circle(0% at 0% 0%)", opacity: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 w-full h-screen bg-brand-dark z-[60] flex flex-col items-center justify-center"
           >
@@ -206,8 +253,11 @@ export default function Navbar() {
                   >
                     <Link
                       href={link.href}
-                      className={`text-4xl md:text-6xl font-black transition-all hover:tracking-widest ${isActive ? 'text-brand-primary' : 'text-foreground/40 hover:text-foreground'
-                        }`}
+                      className={`text-4xl md:text-6xl font-black transition-all hover:tracking-widest ${
+                        isActive
+                          ? "text-brand-primary"
+                          : "text-foreground/40 hover:text-foreground"
+                      }`}
                       onClick={() => {
                         setActiveSection(link.href.substring(1));
                         setIsOpen(false);
@@ -244,9 +294,24 @@ export default function Navbar() {
               transition={{ delay: 1 }}
               className="absolute bottom-12 flex gap-8"
             >
-              <Link href="#" className="text-foreground/20 hover:text-brand-primary transition-colors font-bold tracking-widest uppercase text-xs">LinkedIn</Link>
-              <Link href="#" className="text-foreground/20 hover:text-brand-primary transition-colors font-bold tracking-widest uppercase text-xs">GitHub</Link>
-              <Link href="#" className="text-foreground/20 hover:text-brand-primary transition-colors font-bold tracking-widest uppercase text-xs">Twitter</Link>
+              <Link
+                href="#"
+                className="text-foreground/20 hover:text-brand-primary transition-colors font-bold tracking-widest uppercase text-xs"
+              >
+                LinkedIn
+              </Link>
+              <Link
+                href="#"
+                className="text-foreground/20 hover:text-brand-primary transition-colors font-bold tracking-widest uppercase text-xs"
+              >
+                GitHub
+              </Link>
+              <Link
+                href="#"
+                className="text-foreground/20 hover:text-brand-primary transition-colors font-bold tracking-widest uppercase text-xs"
+              >
+                Twitter
+              </Link>
             </motion.div>
           </motion.div>
         )}
