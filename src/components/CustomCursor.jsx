@@ -1,12 +1,31 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
+
+const subscribeReducedMotion = (callback) => {
+  if (typeof window === 'undefined') return () => {};
+  const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+  query.addEventListener('change', callback);
+  return () => query.removeEventListener('change', callback);
+};
+
+const getReducedMotionSnapshot = () => {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
+
+const getReducedMotionServerSnapshot = () => false;
 
 const CustomCursor = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot
+  );
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -64,15 +83,15 @@ const CustomCursor = () => {
     };
   }, [mouseX, mouseY, isVisible]);
 
-  if (isMobile || !isVisible) return null;
+  if (isMobile || !isVisible || reducedMotion) return null;
 
   return (
     <div className="fixed top-0 left-0 pointer-events-none z-[9999]">
       {/* Main Cursor Container */}
       <motion.div
         style={{
-          x: mouseX,
-          y: mouseY,
+          x: springX,
+          y: springY,
           translateX: '-50%',
           translateY: '-50%',
         }}

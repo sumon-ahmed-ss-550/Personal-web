@@ -1,147 +1,99 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import Image from "next/image";
-import gsap from "gsap";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
-const experiences = [
-  {
-    role: "Full Stack Developer",
-    company: "Freelance",
-    period: "2023 - Present",
-    description:
-      "Building modern web applications and delivering solutions for clients worldwide. Specialized in React and Node.js ecosystems.",
-    isLatest: true,
-  },
-  {
-    role: "Frontend Developer",
-    company: "Tech Solutions Ltd.",
-    period: "2022 - 2023",
-    description:
-      "Worked on building responsive UI and improving user experience for large-scale enterprise dashboards.",
-    isLatest: false,
-  },
-  {
-    role: "Web Developer Intern",
-    company: "Creative IT Institute",
-    period: "2021 - 2022",
-    description:
-      "Learned and worked on real-world projects using HTML, CSS, and JavaScript. Assisted in bug fixes and landing page designs.",
-    isLatest: false,
-  },
-];
+/**
+ * Career & Experience Timeline Component
+ * Grounded in authentic, verified career history.
+ * In accordance with Master Audit Prompt 11, unverified placeholder records
+ * ("Tech Solutions Ltd.", "Creative IT Institute") have been omitted.
+ *
+ * To add verified positions, add items to the `experiences` array below:
+ * {
+ *   role: string,
+ *   organization: string,
+ *   period: string,
+ *   description: string,
+ *   isCurrent: boolean,
+ * }
+ */
+
+export const experiences = [];
 
 export default function Experience() {
+  // If no verified career history has been supplied, return null to avoid rendering empty or unverified sections
+  if (!experiences || experiences.length === 0) {
+    return null;
+  }
+
   return (
-    <section className="py-24 relative overflow-hidden" id="experience">
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 blur-[100px] -z-10"></div>
-
+    <section
+      className="py-24 lg:py-32 bg-background relative overflow-hidden"
+      id="experience"
+      aria-labelledby="experience-heading"
+    >
       <div className="container mx-auto px-6">
-        <div className="flex flex-col lg:flex-row items-center gap-16">
-          <div className="lg:w-1/2">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <span className="text-xs font-bold uppercase tracking-widest text-indigo-500 mb-2 block">
-                Experience
-              </span>
-              <h2 className="text-4xl font-bold text-foreground mb-12">
-                My Work Journey
-              </h2>
-            </motion.div>
-
-            <div className="relative">
-              {/* Vertical Line */}
-              <motion.div
-                initial={{ scaleY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-                className="absolute left-[11px] top-2 bottom-2 w-[2px] bg-indigo-500/30 origin-top"
-              />
-
-              <div className="space-y-12 relative">
-                {experiences.map((exp, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.5, delay: index * 0.2 }}
-                    className="relative pl-10"
-                  >
-                    {/* Timeline Dot */}
-                    <motion.div
-                      whileHover={{ scale: 1.5 }}
-                      className={`absolute left-0 top-1 w-6 h-6 rounded-full bg-brand-dark border-2 z-10 ${
-                        exp.isLatest
-                          ? "border-indigo-500"
-                          : "border-foreground/20"
-                      }`}
-                    >
-                      {exp.isLatest && (
-                        <div className="absolute inset-0 rounded-full bg-indigo-500 animate-ping opacity-25" />
-                      )}
-                    </motion.div>
-
-                    <div className="flex flex-wrap justify-between items-start gap-2 mb-2">
-                      <h3 className="text-xl font-bold text-foreground">
-                        {exp.role}
-                      </h3>
-                      <span
-                        className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                          exp.isLatest
-                            ? "text-indigo-400 bg-indigo-500/10"
-                            : "text-gray-400 bg-white/5"
-                        }`}
-                      >
-                        {exp.company}
-                      </span>
-                    </div>
-                    <p className="text-sm font-semibold text-indigo-500/60 mb-3">
-                      {exp.period}
-                    </p>
-                    <p className="text-foreground/70 text-sm leading-relaxed max-w-xl">
-                      {exp.description}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-
+        <div className="max-w-4xl mx-auto">
+          {/* Section Header */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, rotate: 2 }}
-            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="lg:w-1/2 flex justify-center"
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
           >
-            <motion.div
-              whileHover={{ rotateY: 10, rotateX: -5 }}
-              transition={{ type: "spring", stiffness: 100 }}
-              className="relative group perspective-1000"
+            <span className="text-xs font-bold uppercase tracking-[0.25em] text-brand-primary mb-3 block">
+              Career Journey
+            </span>
+            <h2
+              id="experience-heading"
+              className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight"
             >
-              <div className="w-full max-w-lg aspect-video rounded-3xl overflow-hidden shadow-2xl border border-white/5 relative z-10">
-                <img
-                  src="/img/laptop.png"
-                  alt="Coding on laptop"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              Professional Experience
+            </h2>
+          </motion.div>
+
+          {/* Timeline Structure */}
+          <div className="relative border-l border-border/80 ml-4 sm:ml-8 space-y-12">
+            {experiences.map((exp, index) => (
+              <motion.article
+                key={`${exp.organization}-${index}`}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="relative pl-8 sm:pl-10"
+              >
+                {/* Node Dot */}
+                <div
+                  className={`absolute -left-[9px] top-1.5 w-4 h-4 rounded-full border-2 bg-background transition-colors ${
+                    exp.isCurrent
+                      ? 'border-brand-primary ring-4 ring-brand-primary/20'
+                      : 'border-border'
+                  }`}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
-                  <p className="text-white font-bold text-lg">
-                    Building the Future
+
+                <div className="card-glass p-6 sm:p-8 rounded-3xl border border-border">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-foreground">
+                      {exp.role}
+                    </h3>
+                    <span className="text-xs font-bold px-3 py-1 rounded-full bg-brand-primary/10 text-brand-primary border border-brand-primary/20 uppercase tracking-wider">
+                      {exp.organization}
+                    </span>
+                  </div>
+
+                  <p className="text-xs font-semibold text-text-muted mb-4">
+                    {exp.period}
+                  </p>
+
+                  <p className="text-sm text-text-muted leading-relaxed">
+                    {exp.description}
                   </p>
                 </div>
-              </div>
-              <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl -z-10" />
-              <div className="absolute -top-10 -left-10 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl -z-10" />
-            </motion.div>
-          </motion.div>
+              </motion.article>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,44 +1,69 @@
 'use client';
 
-import { useEffect } from 'react';
-import Lenis from 'lenis';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
+import { ReactLenis } from 'lenis/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+const subscribeReducedMotion = (callback) => {
+  if (typeof window === 'undefined') return () => {};
+  const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+  query.addEventListener('change', callback);
+  return () => query.removeEventListener('change', callback);
+};
+
+const getReducedMotionSnapshot = () => {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
+
+const getReducedMotionServerSnapshot = () => false;
+
 export default function SmoothScroll({ children }) {
+  const lenisRef = useRef(null);
+  const reducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot
+  );
+
   useEffect(() => {
-    // Initialize GSAP ScrollTrigger
+    if (reducedMotion) return;
+
     gsap.registerPlugin(ScrollTrigger);
 
-    // Initialize Lenis
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      smoothTouch: false,
-      touchMultiplier: 2,
-      infinite: false,
-    });
+    function update(time) {
+      lenisRef.current?.lenis?.raf(time * 1000);
+    }
 
-    // Update ScrollTrigger on Lenis scroll
-    lenis.on('scroll', ScrollTrigger.update);
-
-    // Add Lenis to GSAP ticker
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-
-    // Disable GSAP's lag smoothing (optional, but helps with synchronization)
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.add(update);
 
     return () => {
-      lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(update);
     };
-  }, []);
+  }, [reducedMotion]);
 
-  return <>{children}</>;
+  if (reducedMotion) {
+    return <>{children}</>;
+  }
+
+  return (
+    <ReactLenis
+      ref={lenisRef}
+      autoRaf={false}
+      root
+      options={{
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 2,
+        infinite: false,
+      }}
+    >
+      {children}
+    </ReactLenis>
+  );
 }

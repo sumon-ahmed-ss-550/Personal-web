@@ -1,17 +1,38 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 
-const ScrollToTop = () => {
+function subscribeReducedMotion(callback) {
+  if (typeof window === 'undefined') return () => {};
+  const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  mediaQuery.addEventListener('change', callback);
+  return () => mediaQuery.removeEventListener('change', callback);
+}
+
+function getReducedMotionSnapshot() {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
+export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
   const { scrollYProgress } = useScroll();
-  
-  // Smooth spring for the progress ring
+
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getServerSnapshot
+  );
+
   const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
+    stiffness: prefersReducedMotion ? 1000 : 100,
+    damping: prefersReducedMotion ? 100 : 30,
+    restDelta: 0.001,
   });
 
   useEffect(() => {
@@ -23,14 +44,14 @@ const ScrollToTop = () => {
       }
     };
 
-    window.addEventListener('scroll', toggleVisibility);
+    window.addEventListener('scroll', toggleVisibility, { passive: true });
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
     });
   };
 
@@ -38,63 +59,61 @@ const ScrollToTop = () => {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.5, y: 20 }}
+          initial={{ opacity: 0, scale: 0.8, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.5, y: 20 }}
-          className="fixed bottom-8 right-8 z-[100]"
+          exit={{ opacity: 0, scale: 0.8, y: 15 }}
+          transition={{ duration: prefersReducedMotion ? 0.01 : 0.2 }}
+          className="fixed bottom-6 right-6 z-40"
         >
           <button
+            type="button"
             onClick={scrollToTop}
-            aria-label="Scroll to top"
-            className="group relative w-14 h-14 rounded-full bg-brand-dark/80 backdrop-blur-md border border-white/10 flex items-center justify-center transition-all hover:border-indigo-500/50 shadow-2xl shadow-black/50"
+            aria-label="Scroll back to top of page"
+            className="group relative w-12 h-12 rounded-full bg-surface/90 border border-border backdrop-blur-md flex items-center justify-center transition-all hover:border-brand-primary/50 shadow-lg shadow-black/20"
           >
             {/* Progress Ring (SVG) */}
-            <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+            <svg
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none"
+              viewBox="0 0 100 100"
+            >
               <circle
                 cx="50"
                 cy="50"
-                r="46"
+                r="44"
                 fill="none"
-                stroke="rgba(255, 255, 255, 0.1)"
+                stroke="currentColor"
+                className="text-border"
                 strokeWidth="4"
               />
               <motion.circle
                 cx="50"
                 cy="50"
-                r="46"
+                r="44"
                 fill="none"
-                stroke="#6366f1" // indigo-500
+                stroke="var(--primary)"
                 strokeWidth="4"
                 strokeDasharray="0 1"
-                style={{ pathLength: scrollYProgress }}
-                className="drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]"
+                style={{ pathLength: scaleX }}
               />
             </svg>
 
-            {/* Icon */}
-            <motion.svg
-              whileHover={{ y: -5, x: 5 }}
-              className="w-6 h-6 text-foreground group-hover:text-indigo-400 transition-colors relative z-10"
+            {/* Up Arrow Icon */}
+            <svg
+              aria-hidden="true"
+              className="w-4 h-4 text-foreground group-hover:text-brand-primary transition-colors relative z-10"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
-              strokeWidth="2"
+              strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-              <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
-              <path d="M9 12H4s.55-3.03 2-5c1.62-2.2 5-3 5-3" />
-              <path d="M12 15v5s3.03-.55 5-2c2.2-1.62 3-5 3-5" />
-            </motion.svg>
-            
-            {/* Subtle glow on hover */}
-            <div className="absolute inset-0 rounded-full bg-indigo-500/0 group-hover:bg-indigo-500/5 transition-colors -z-10" />
+              <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
           </button>
         </motion.div>
       )}
     </AnimatePresence>
   );
-};
-
-export default ScrollToTop;
+}

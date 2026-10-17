@@ -1,53 +1,76 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileDown } from "lucide-react";
+
+const navLinks = [
+  { name: "Home", href: "#home" },
+  { name: "About", href: "#about" },
+  { name: "Skills", href: "#skills" },
+  { name: "Projects", href: "#projects" },
+  { name: "Contact", href: "#contact" },
+];
+
+const subscribeTheme = (callback) => {
+  window.addEventListener("storage", callback);
+  window.addEventListener("themechange", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("themechange", callback);
+  };
+};
+
+const getThemeSnapshot = () => {
+  return localStorage.getItem("theme") || "dark";
+};
+
+const getThemeServerSnapshot = () => "dark";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
-  const [theme, setTheme] = useState("dark");
+  const theme = useSyncExternalStore(subscribeTheme, getThemeSnapshot, getThemeServerSnapshot);
 
+  // Background scroll management
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
     }
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
 
+  // Keyboard Escape key handler to close mobile navigation
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "dark";
-    setTheme(savedTheme);
-    if (savedTheme === "dark") {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
+  // Synchronize document dark class with active theme
+  useEffect(() => {
+    if (theme === "dark") {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, []);
+  }, [theme]);
 
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    window.dispatchEvent(new Event("themechange"));
   };
 
-  const navLinks = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Skills", href: "#skills" },
-    { name: "Projects", href: "#projects" },
-    // { name: "Experience", href: "#experience" },
-    { name: "Contact", href: "#contact" },
-  ];
-
+  // Scrollspy for active section
   useEffect(() => {
     const handleScroll = () => {
       const scrollHeight = document.documentElement.scrollHeight;
@@ -80,123 +103,104 @@ export default function Navbar() {
 
   return (
     <motion.header
-      initial={{ y: -100, opacity: 0 }}
+      initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed top-0 w-full z-50 bg-brand-dark/80 backdrop-blur-md border-b border-white/8"
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border"
     >
-      <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-2 cursor-pointer"
+      <nav className="container mx-auto px-6 py-4 flex justify-between items-center" aria-label="Main Navigation">
+        <Link
+          href="#home"
+          className="flex items-center gap-1 text-xl font-black tracking-tight text-foreground group"
         >
-          <span className="text-xl font-bold text-foreground italic">
-            SMN<span className="text-brand-primary">WEB</span>
-          </span>
-        </motion.div>
+          <span>SMN</span>
+          <span className="text-brand-primary">.DEV</span>
+        </Link>
 
-        {/* Desktop Menu */}
-        <ul className="hidden xl:flex space-x-8 text-sm font-medium">
-          {navLinks.map((link, i) => {
+        {/* Desktop Menu (768px+) */}
+        <ul className="hidden md:flex items-center gap-1 bg-surface/50 p-1.5 rounded-full border border-border backdrop-blur-md text-sm font-medium">
+          {navLinks.map((link) => {
             const isActive = activeSection === link.href.substring(1);
             return (
-              <motion.li
-                key={link.name}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 * i }}
-              >
+              <li key={link.name} className="relative">
                 <Link
                   href={link.href}
-                  className={`relative transition-all duration-300 ${
+                  className={`relative px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-colors duration-200 block ${
                     isActive
-                      ? "text-brand-primary/80"
-                      : "text-gray-400 hover:text-foreground"
+                      ? "text-brand-primary font-bold"
+                      : "text-foreground/60 hover:text-foreground"
                   }`}
                   onClick={() => setActiveSection(link.href.substring(1))}
                 >
-                  {link.name}
                   {isActive && (
-                    <motion.div
-                      layoutId="nav-underline"
-                      className="absolute -bottom-1 left-0 w-full h-0.5 bg-brand-primary rounded-full"
-                      transition={{
-                        type: "spring",
-                        stiffness: 380,
-                        damping: 30,
-                      }}
+                    <motion.span
+                      layoutId="nav-active-pill"
+                      className="absolute inset-0 rounded-full bg-brand-primary/10 border border-brand-primary/20 -z-10"
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     />
                   )}
+                  {link.name}
                 </Link>
-              </motion.li>
+              </li>
             );
           })}
         </ul>
 
-        <div className="flex items-center gap-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            <a
-              href="/cv/johan.jpg"
-              download="Johan_CV.jpg"
-              className="hidden xl:flex items-center gap-2 bg-brand-primary hover:opacity-90 text-white px-5 py-2 rounded-lg text-sm font-semibold transition-all shadow-lg shadow-brand-primary/20"
-            >
-              Download CV
-              <FileDown className="h-4 w-4" />
-            </a>
-          </motion.div>
-
+        {/* Actions Row */}
+        <div className="flex items-center gap-3">
           <motion.button
-            whileHover={{ scale: 1.1, rotate: 15 }}
-            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
             onClick={toggleTheme}
-            className="p-2 text-foreground/50 hover:text-foreground transition-colors"
-            aria-label="Toggle theme"
+            className="w-10 h-10 rounded-xl bg-surface/60 border border-border flex items-center justify-center text-foreground/70 hover:text-brand-primary transition-colors"
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
           >
             {theme === "dark" ? (
               <svg
-                className="h-6 w-6"
+                aria-hidden="true"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
-                ></path>
+                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                />
               </svg>
             ) : (
               <svg
-                className="h-6 w-6"
+                aria-hidden="true"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path
-                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="2"
-                ></path>
+                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                />
               </svg>
             )}
           </motion.button>
 
+          {/* Mobile Menu Button (below 768px) */}
           <motion.button
-            whileTap={{ scale: 0.9 }}
-            className="xl:hidden p-2 text-foreground/50 hover:text-foreground transition-colors z-[70]"
+            whileTap={{ scale: 0.92 }}
+            className="md:hidden w-10 h-10 rounded-xl bg-surface/60 border border-border flex items-center justify-center text-foreground/70 hover:text-foreground transition-colors z-[70]"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
+            aria-label={isOpen ? "Close menu" : "Open navigation menu"}
+            aria-expanded={isOpen}
+            aria-controls="mobile-nav-drawer"
           >
             {isOpen ? (
               <svg
-                className="h-8 w-8"
+                aria-hidden="true"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -210,7 +214,8 @@ export default function Navbar() {
               </svg>
             ) : (
               <svg
-                className="h-8 w-8"
+                aria-hidden="true"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -227,36 +232,40 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Fullscreen Mobile Menu Overlay */}
+      {/* Fullscreen Mobile Navigation Drawer */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ clipPath: "circle(0% at 0% 0%)", opacity: 0 }}
-            animate={{ clipPath: "circle(150% at 0% 0%)", opacity: 1 }}
-            exit={{ clipPath: "circle(0% at 0% 0%)", opacity: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 w-full h-screen bg-brand-dark z-[60] flex flex-col items-center justify-center"
+            id="mobile-nav-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation Menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 w-full h-screen bg-background/95 backdrop-blur-2xl z-[60] flex flex-col items-center justify-center"
           >
-            {/* Background Decorative Elements */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-primary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-secondary/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
+            {/* Ambient Background Accents */}
+            <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-brand-primary/10 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-brand-secondary/10 rounded-full blur-[100px] pointer-events-none" />
 
-            <ul className="flex flex-col items-center gap-8 relative z-10">
+            <ul className="flex flex-col items-center gap-6 relative z-10">
               {navLinks.map((link, i) => {
                 const isActive = activeSection === link.href.substring(1);
                 return (
                   <motion.li
                     key={link.name}
-                    initial={{ y: 30, opacity: 0 }}
+                    initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+                    transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}
                   >
                     <Link
                       href={link.href}
-                      className={`text-4xl md:text-6xl font-black transition-all hover:tracking-widest ${
+                      className={`text-3xl font-black uppercase tracking-wider transition-colors ${
                         isActive
                           ? "text-brand-primary"
-                          : "text-foreground/40 hover:text-foreground"
+                          : "text-foreground/50 hover:text-foreground"
                       }`}
                       onClick={() => {
                         setActiveSection(link.href.substring(1));
@@ -268,50 +277,31 @@ export default function Navbar() {
                   </motion.li>
                 );
               })}
-
-              <motion.li
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="mt-8 px-6 w-full max-w-xs"
-              >
-                <a
-                  href="/cv/johan.jpg"
-                  download="Johan_CV.jpg"
-                  className="flex items-center justify-center gap-3 bg-brand-primary hover:opacity-90 text-white px-8 py-5 rounded-2xl font-black text-xl transition-all shadow-2xl shadow-brand-primary/20"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Download CV
-                  <FileDown className="h-6 w-6" />
-                </a>
-              </motion.li>
             </ul>
 
-            {/* Social Links */}
+            {/* Verified External Social Links */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="absolute bottom-12 flex gap-8"
+              transition={{ delay: 0.5 }}
+              className="absolute bottom-12 flex gap-8 text-xs uppercase tracking-widest font-bold"
             >
-              <Link
-                href="#"
-                className="text-foreground/20 hover:text-brand-primary transition-colors font-bold tracking-widest uppercase text-xs"
-              >
-                LinkedIn
-              </Link>
-              <Link
-                href="#"
-                className="text-foreground/20 hover:text-brand-primary transition-colors font-bold tracking-widest uppercase text-xs"
+              <a
+                href="https://github.com/sumon-ahmed-ss-550"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground/40 hover:text-brand-primary transition-colors"
+                onClick={() => setIsOpen(false)}
               >
                 GitHub
-              </Link>
-              <Link
-                href="#"
-                className="text-foreground/20 hover:text-brand-primary transition-colors font-bold tracking-widest uppercase text-xs"
+              </a>
+              <a
+                href="mailto:md20sumon25@gmail.com"
+                className="text-foreground/40 hover:text-brand-primary transition-colors"
+                onClick={() => setIsOpen(false)}
               >
-                Twitter
-              </Link>
+                Email
+              </a>
             </motion.div>
           </motion.div>
         )}

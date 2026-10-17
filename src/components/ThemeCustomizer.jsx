@@ -1,48 +1,60 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 
 const colors = [
-  { name: 'Indigo', value: '#6366f1', light: '#a855f7' },
-  { name: 'Cyan', value: '#06b6d4', light: '#22d3ee' },
-  { name: 'Rose', value: '#f43f5e', light: '#fb7185' },
-  { name: 'Emerald', value: '#10b981', light: '#34d399' },
-  { name: 'Amber', value: '#f59e0b', light: '#fbbf24' },
-  { name: 'Sky', value: '#0ea5e9', light: '#38bdf8' },
+  { name: 'Electric Indigo', value: '#6366f1', light: '#818cf8' },
+  { name: 'Cyber Cyan', value: '#06b6d4', light: '#22d3ee' },
+  { name: 'Emerald Signal', value: '#10b981', light: '#34d399' },
+  { name: 'Solar Amber', value: '#f59e0b', light: '#fbbf24' },
+  { name: 'Neon Rose', value: '#f43f5e', light: '#fb7185' },
+  { name: 'Violet Pulse', value: '#8b5cf6', light: '#a78bfa' },
 ];
 
 export default function ThemeCustomizer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeColor, setActiveColor] = useState(colors[0].value);
-  const [customColor, setCustomColor] = useState(colors[0].value);
-  const panelRef = useRef(null);
+  const [activeColor, setActiveColor] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('accentColor') || colors[0].value;
+    }
+    return colors[0].value;
+  });
+  const [customColor, setCustomColor] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('accentColor') || colors[0].value;
+    }
+    return colors[0].value;
+  });
 
   const hexToRgb = (hex) => {
+    if (!hex || !hex.startsWith('#') || hex.length < 7) return '99, 102, 241';
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
     const b = parseInt(hex.slice(5, 7), 16);
     return `${r}, ${g}, ${b}`;
   };
 
-  const updateTheme = (colorObj) => {
+  useEffect(() => {
     const root = document.documentElement;
-    root.style.setProperty('--primary', colorObj.value);
-    root.style.setProperty('--primary-rgb', hexToRgb(colorObj.value));
-    root.style.setProperty('--primary-light', colorObj.light || colorObj.value);
+    root.style.setProperty('--primary', activeColor);
+    root.style.setProperty('--primary-rgb', hexToRgb(activeColor));
+    const matched = colors.find((c) => c.value === activeColor);
+    root.style.setProperty('--primary-light', matched?.light || activeColor);
+  }, [activeColor]);
+
+  const updateTheme = (colorObj) => {
     setActiveColor(colorObj.value);
     setCustomColor(colorObj.value);
+    localStorage.setItem('accentColor', colorObj.value);
   };
 
   const handleCustomColor = (e) => {
     const val = e.target.value;
-    setCustomColor(val);
-    const root = document.documentElement;
-    root.style.setProperty('--primary', val);
-    root.style.setProperty('--primary-rgb', hexToRgb(val));
-    root.style.setProperty('--primary-light', val);
     setActiveColor(val);
+    setCustomColor(val);
+    localStorage.setItem('accentColor', val);
   };
 
   useEffect(() => {
@@ -62,10 +74,11 @@ export default function ThemeCustomizer() {
           onClick={() => setIsOpen(!isOpen)}
           whileHover={{ scale: 1.1, x: -5 }}
           whileTap={{ scale: 0.9 }}
+          aria-label="Customize theme accent color"
           className="theme-trigger w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand-card/80 backdrop-blur-md border border-white/10 flex items-center justify-center shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] group transition-shadow hover:shadow-[0_0_30px_rgba(var(--primary-rgb),0.5)]"
         >
           <div className="animate-[spin_4s_linear_infinite] group-hover:[animation-play-state:paused] flex items-center justify-center">
-            <svg className="w-5 h-5 md:w-6 md:h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg aria-hidden="true" className="w-5 h-5 md:w-6 md:h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
@@ -84,8 +97,12 @@ export default function ThemeCustomizer() {
           >
             <div className="flex items-center justify-between mb-5 md:mb-6">
               <h3 className="text-lg font-bold text-white">Theme Settings</h3>
-              <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button
+                onClick={() => setIsOpen(false)}
+                aria-label="Close theme settings panel"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <svg aria-hidden="true" className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -94,7 +111,7 @@ export default function ThemeCustomizer() {
             <div className="space-y-5 md:space-y-6">
               <div>
                 <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 md:mb-4">Accent Color</p>
-                <div className="grid grid-cols-4 gap-2 md:gap-3">
+                <div className="grid grid-cols-3 gap-2 md:gap-3">
                   {colors.map((color) => (
                     <motion.button
                       key={color.name}
@@ -106,6 +123,7 @@ export default function ThemeCustomizer() {
                       }`}
                       style={{ backgroundColor: color.value, boxShadow: `0 0 10px ${color.value}44` }}
                       title={color.name}
+                      aria-label={`Select ${color.name} accent`}
                     />
                   ))}
                 </div>

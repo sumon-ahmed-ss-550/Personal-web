@@ -11,7 +11,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 export default function Home() {
   return (
     <SmoothScroll>
-      <main className="min-h-screen">
+      <main id="main-content" className="min-h-screen">
         <Navbar />
         <Hero />
         <About />
