@@ -46,7 +46,7 @@ export default function Hero() {
               transition={{ duration: 0.5, ease: 'easeOut' }}
               className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-surface/80 border border-border text-xs font-semibold uppercase tracking-wider text-text-muted mb-6 shadow-sm backdrop-blur-md"
             >
-              <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" aria-hidden="true" />
+              <span className="inline-block w-2 h-2 rounded-full bg-brand-primary animate-pulse flex-shrink-0" aria-hidden="true" />
               <span>Front-End &amp; Full Stack Developer</span>
               <span className="text-border" aria-hidden="true">·</span>
               <span>Bangladesh (GMT+6)</span>
@@ -183,7 +183,7 @@ export default function Hero() {
                 className="absolute inset-0 bg-brand-primary/15 rounded-3xl rotate-6 transition-transform hover:rotate-8 duration-500 blur-sm"
                 aria-hidden="true"
               />
-              <div className="relative w-full h-full rounded-3xl overflow-hidden border border-border bg-card shadow-2xl">
+              <div className="relative w-full h-full rounded-3xl overflow-hidden border border-border bg-surface shadow-2xl">
                 <Image
                   src="/img/natural.png"
                   alt="Sumon Ahmed portrait"
@@ -192,9 +192,10 @@ export default function Hero() {
                   priority
                   sizes="(max-width: 640px) 280px, (max-width: 1024px) 360px, 420px"
                   className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                  style={{ filter: 'brightness(0.9) contrast(1.05) saturate(1.1)' }}
                 />
                 <div
-                  className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent pointer-events-none"
+                  className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent pointer-events-none"
                   aria-hidden="true"
                 />
               </div>

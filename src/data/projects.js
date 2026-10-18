@@ -20,7 +20,7 @@ export const projects = [
     approach:
       'Constructed using Next.js App Router and semantic tokens, implementing smooth scrolling with reduced-motion fallbacks and theme persistence.',
     technologies: ['Next.js', 'React', 'Tailwind CSS', 'Framer Motion'],
-    image: '/img/laptop.webp',
+    image: '/img/portfolio.png',
     imageAlt: 'Laptop mockup showing personal developer portfolio interface',
     githubUrl: 'https://github.com/sumon-ahmed-ss-550/Personal-web',
     demoUrl: '#home',
@@ -40,8 +40,7 @@ export const projects = [
     approach:
       'Built with a responsive React frontend communicating via REST endpoints with a dedicated Express/MongoDB backend service.',
     technologies: ['React', 'Node.js', 'MongoDB', 'Tailwind CSS', 'REST API'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDyDCw3anUQvhv859hDwCa_7vYXDrqb2r9FnsAGI2r6HHqhD-lxAytJQsH09k4np7eLDdUonM_9gTrpXXGFhsEARwD-Y9NMHiaf6UI45iwCojTSYC5bAGagnoQ0Q4-Z1xp2XZKVhP0GtxgA8YPe7WsFA_hFXb6tsqkn1R9SmQhpV7W2Jq0lq6M3aoPVToXWPlg0PSCu0sxCu6GzGmcjNhjNl77xbkPjezEluGfezmR9hpTf8w14fJNIb7S7GIxFLIHYEh38u2bLNmp9',
+    image: '/img/ebook-platform.png',
     imageAlt: 'Interface preview of the E-Book Platform application',
     githubUrl: 'https://github.com/sumon-ahmed-ss-550/ebook_platform_client',
     serverGithubUrl: 'https://github.com/sumon-ahmed-ss-550/Ebook_Platform_Server',
@@ -61,8 +60,7 @@ export const projects = [
     approach:
       'Engineered with React components on the frontend and an Express/MongoDB REST API on the backend for schedule records.',
     technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS'],
-    image:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBmC5Mc9L0NR7tD8mLh8RdRQgZAWVKut8pNRkQwFnF-cWNdaoJgrSyfdjmSYOXnSTnqmA6O2oYLBFLe6i4yl4Hlh3cGrFuyILlaNUWx78Oaqown7ZcmTfNFbg_Wnrh-WiVqqdcZ9gXbbG7noV9G1gDe-p2L21WwA1b59TJVaqJ4dELp7Q6riEZ1HgeJ2tn-fIenveJgNvuJI-xXylWMzIjqG54QmO4QyFVhmSOu38lspNNRwRbgEouIbpRv5K3yjiHQLfFOdye89G3Q',
+    image: '/img/tutor-booking.png',
     imageAlt: 'Interface preview of the Tutor Booking Platform web application',
     githubUrl: 'https://github.com/sumon-ahmed-ss-550/Tutor-booking-client',
     serverGithubUrl: 'https://github.com/sumon-ahmed-ss-550/Tutor-booking-server',
@@ -70,22 +68,22 @@ export const projects = [
     featured: true,
   },
   {
-    id: 'wanderlust-travel',
-    title: 'Wanderlust Travel Explorer',
-    category: 'Frontend',
-    type: 'Front-End Application',
+    id: 'keen-keeper',
+    title: 'Keen Keeper',
+    category: 'Full Stack',
+    type: 'Full-Stack MERN Architecture',
     description:
-      'A travel catalog application offering destination discovery, responsive tour cards, and interactive filtering components.',
-    role: 'Front-End Developer',
+      'A comprehensive task and resource management application designed to help users organize, track, and manage their personal or professional tasks efficiently with a modern, intuitive interface.',
+    role: 'Full-Stack Developer (Client & Server Repositories)',
     context:
-      'Designed to provide a fluid, image-rich destination browsing experience.',
+      'Built to address the need for a streamlined task management solution with real-time updates and persistent data storage.',
     approach:
-      'Implemented with modular React components and Tailwind styling, optimizing for responsive screen layouts and visual hierarchy.',
-    technologies: ['React', 'JavaScript', 'Tailwind CSS', 'REST API'],
-    image: '/img/natural.webp',
-    imageAlt: 'Scenic landscape representative of Wanderlust Travel destination cards',
-    githubUrl: 'https://github.com/sumon-ahmed-ss-550/Wanderlust-client',
-    serverGithubUrl: 'https://github.com/sumon-ahmed-ss-550/Wanderlust-server',
+      'Engineered with a responsive React frontend and Express/MongoDB backend, featuring RESTful API endpoints for CRUD operations and user authentication.',
+    technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'Tailwind CSS'],
+    image: '/img/keen-keeper.png',
+    imageAlt: 'Interface preview of the Keen Keeper task management application',
+    githubUrl: 'https://github.com/sumon-ahmed-ss-550/Keen-Keeper-client',
+    serverGithubUrl: 'https://github.com/sumon-ahmed-ss-550/Keen-Keeper-server',
     demoUrl: null,
     featured: true,
   },

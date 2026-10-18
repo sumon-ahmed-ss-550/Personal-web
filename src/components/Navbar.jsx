@@ -111,7 +111,7 @@ export default function Navbar() {
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center" aria-label="Main Navigation">
         <Link
           href="#home"
-          className="flex items-center gap-1 text-xl font-black tracking-tight text-foreground group"
+          className="flex items-center gap-0 text-xl font-black tracking-tight text-foreground group"
         >
           <span>SMN</span>
           <span className="text-brand-primary">.DEV</span>
