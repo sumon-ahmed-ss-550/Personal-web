@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import GitHubStats from './GitHubStats';
 
 export default function About() {
   const [bioMode, setBioMode] = useState('brief'); // 'brief' | 'detailed'
@@ -202,6 +203,9 @@ export default function About() {
               ))}
             </div>
           </div>
+
+          {/* GitHub Engineering Footprint & Repository Insights */}
+          <GitHubStats />
         </div>
       </div>
     </section>

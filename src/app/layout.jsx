@@ -4,6 +4,7 @@ import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
 import ScrollToTop from "@/components/ScrollToTop";
 import ThemeCustomizer from "@/components/ThemeCustomizer";
+import TerminalModal from "@/components/TerminalModal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -90,6 +91,30 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+              try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'light') {
+                  document.documentElement.classList.remove('dark');
+                } else {
+                  document.documentElement.classList.add('dark');
+                }
+                var color = localStorage.getItem('accentColor');
+                if (color) {
+                  document.documentElement.style.setProperty('--primary', color);
+                  if (color.startsWith('#') && color.length >= 7) {
+                    var r = parseInt(color.slice(1, 3), 16);
+                    var g = parseInt(color.slice(3, 5), 16);
+                    var b = parseInt(color.slice(5, 7), 16);
+                    document.documentElement.style.setProperty('--primary-rgb', r + ', ' + g + ', ' + b);
+                  }
+                }
+              } catch(e){}
+            })()`,
+          }}
+        />
       </head>
       <body
         className={`${inter.variable} font-sans antialiased bg-brand-dark text-foreground`}
@@ -103,6 +128,7 @@ export default function RootLayout({ children }) {
         <CustomCursor />
         <ScrollToTop />
         <ThemeCustomizer />
+        <TerminalModal />
         {children}
       </body>
     </html>

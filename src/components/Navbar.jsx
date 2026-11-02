@@ -3,12 +3,15 @@
 import { useState, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { Volume2, VolumeX } from "lucide-react";
+import { setSoundEnabled, playTick, playPop } from "@/utils/audio";
 
 const navLinks = [
   { name: "Home", href: "#home" },
   { name: "About", href: "#about" },
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
+  { name: "Experience", href: "#experience" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -27,10 +30,34 @@ const getThemeSnapshot = () => {
 
 const getThemeServerSnapshot = () => "dark";
 
+const subscribeSound = (callback) => {
+  window.addEventListener("storage", callback);
+  window.addEventListener("soundchange", callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener("soundchange", callback);
+  };
+};
+
+const getSoundSnapshot = () => {
+  return typeof window !== "undefined" && localStorage.getItem("soundEnabled") === "true";
+};
+
+const getSoundServerSnapshot = () => false;
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const theme = useSyncExternalStore(subscribeTheme, getThemeSnapshot, getThemeServerSnapshot);
+  const soundOn = useSyncExternalStore(subscribeSound, getSoundSnapshot, getSoundServerSnapshot);
+
+  const toggleSound = () => {
+    const next = !soundOn;
+    setSoundEnabled(next);
+    if (next) {
+      playPop();
+    }
+  };
 
   // Background scroll management
   useEffect(() => {
@@ -65,6 +92,7 @@ export default function Navbar() {
   }, [theme]);
 
   const toggleTheme = () => {
+    playTick();
     const newTheme = theme === "dark" ? "light" : "dark";
     localStorage.setItem("theme", newTheme);
     window.dispatchEvent(new Event("themechange"));
@@ -130,7 +158,10 @@ export default function Navbar() {
                       ? "text-brand-primary font-bold"
                       : "text-foreground/60 hover:text-foreground"
                   }`}
-                  onClick={() => setActiveSection(link.href.substring(1))}
+                  onClick={() => {
+                    playTick();
+                    setActiveSection(link.href.substring(1));
+                  }}
                 >
                   {isActive && (
                     <motion.span
@@ -147,7 +178,21 @@ export default function Navbar() {
         </ul>
 
         {/* Actions Row */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          {/* Subtle Web Audio Toggle */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            onClick={toggleSound}
+            className={`w-10 h-10 rounded-xl bg-surface/60 border border-border flex items-center justify-center transition-colors ${
+              soundOn ? "text-brand-primary border-brand-primary/40" : "text-foreground/60 hover:text-foreground"
+            }`}
+            aria-label={soundOn ? "Mute interface audio sounds" : "Enable interface audio sounds"}
+            title={soundOn ? "Mute audio effects" : "Enable tactile sound effects"}
+          >
+            {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+          </motion.button>
+
           <motion.button
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
@@ -268,6 +313,7 @@ export default function Navbar() {
                           : "text-foreground/50 hover:text-foreground"
                       }`}
                       onClick={() => {
+                        playTick();
                         setActiveSection(link.href.substring(1));
                         setIsOpen(false);
                       }}

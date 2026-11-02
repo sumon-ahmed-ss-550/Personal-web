@@ -4,9 +4,14 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import ParticleBackground from './ParticleBackground';
+import ResumeModal from './ResumeModal';
+import Magnetic from './Magnetic';
+import { FileDown } from 'lucide-react';
 
 export default function Hero() {
   const [copied, setCopied] = useState(false);
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
   const email = 'md20sumon25ahmed@gmail.com';
 
   const handleCopyEmail = async () => {
@@ -34,6 +39,9 @@ export default function Hero() {
         className="hero-glow absolute top-1/4 right-1/4 w-[500px] h-[500px] lg:w-[700px] lg:h-[700px] -z-10 rounded-full pointer-events-none blur-3xl opacity-75"
         aria-hidden="true"
       />
+
+      {/* Reactive Particle Canvas */}
+      <ParticleBackground />
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
@@ -81,51 +89,69 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.3, ease: 'easeOut' }}
               className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-12"
             >
-              <Link
-                href="#projects"
-                className="bg-brand-primary hover:opacity-90 text-white px-7 py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all shadow-lg shadow-brand-primary/25 inline-flex items-center gap-2 group"
-              >
-                <span>View Projects</span>
-                <svg
-                  aria-hidden="true"
-                  className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <Magnetic strength={0.3}>
+                <Link
+                  href="#projects"
+                  className="bg-brand-primary hover:opacity-90 text-white px-7 py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all shadow-lg shadow-brand-primary/25 inline-flex items-center gap-2 group"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </Link>
+                  <span>View Projects</span>
+                  <svg
+                    aria-hidden="true"
+                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              </Magnetic>
 
-              <Link
-                href="#contact"
-                className="bg-surface/80 hover:bg-surface text-foreground px-7 py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all border border-border inline-flex items-center gap-2"
-              >
-                <span>Contact Me</span>
-              </Link>
+              <Magnetic strength={0.3}>
+                <Link
+                  href="#contact"
+                  className="bg-surface/80 hover:bg-surface text-foreground px-7 py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all border border-border inline-flex items-center gap-2"
+                >
+                  <span>Contact Me</span>
+                </Link>
+              </Magnetic>
 
-              <button
-                type="button"
-                onClick={handleCopyEmail}
-                aria-label={copied ? 'Email address copied' : 'Copy email address to clipboard'}
-                className="bg-surface/40 hover:bg-surface/80 text-text-muted hover:text-foreground px-5 py-3.5 rounded-xl font-medium text-sm transition-all border border-border/60 inline-flex items-center gap-2"
-              >
-                {copied ? (
-                  <>
-                    <svg aria-hidden="true" className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span className="text-emerald-400 font-semibold">Email Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <svg aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    <span>Copy Email</span>
-                  </>
-                )}
-              </button>
+              <Magnetic strength={0.3}>
+                <button
+                  type="button"
+                  onClick={() => setIsResumeOpen(true)}
+                  aria-label="View and download Sumon Ahmed's resume"
+                  className="bg-surface/60 hover:bg-surface text-foreground px-5 py-3.5 rounded-xl font-bold text-sm tracking-wide transition-all border border-border inline-flex items-center gap-2 group"
+                >
+                  <FileDown className="w-4 h-4 text-brand-primary group-hover:translate-y-0.5 transition-transform" />
+                  <span>Resume</span>
+                </button>
+              </Magnetic>
+
+              <Magnetic strength={0.3}>
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  aria-label={copied ? 'Email address copied' : 'Copy email address to clipboard'}
+                  className="bg-surface/40 hover:bg-surface/80 text-text-muted hover:text-foreground px-5 py-3.5 rounded-xl font-medium text-sm transition-all border border-border/60 inline-flex items-center gap-2"
+                >
+                  {copied ? (
+                    <>
+                      <svg aria-hidden="true" className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-emerald-400 font-semibold">Email Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      <span>Copy Email</span>
+                    </>
+                  )}
+                </button>
+              </Magnetic>
             </motion.div>
 
             {/* Verified Social Connect Channels */}
@@ -203,6 +229,9 @@ export default function Hero() {
           </div>
         </div>
       </div>
+
+      {/* Interactive Resume Preview & Download Modal */}
+      <ResumeModal isOpen={isResumeOpen} onClose={() => setIsResumeOpen(false)} />
     </section>
   );
 }

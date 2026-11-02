@@ -18,7 +18,32 @@ import { motion } from 'framer-motion';
  * }
  */
 
-export const experiences = [];
+export const experiences = [
+  {
+    role: 'Full-Stack Developer (MERN & Next.js)',
+    organization: 'Independent Engineering',
+    period: '2023 – Present',
+    description:
+      'Designing and developing modern web applications utilizing Next.js, React, Node.js, Express, and MongoDB. Delivering accessible client platforms, robust RESTful APIs, and performant user interfaces with Tailwind CSS and Framer Motion.',
+    isCurrent: true,
+  },
+  {
+    role: 'Front-End Web Development Specialization',
+    organization: 'Open Source & Projects',
+    period: '2022 – 2023',
+    description:
+      'Deepened expertise in modern JavaScript (ES6+), React component architecture, and responsive design systems. Engineered decoupled client-server web apps including E-Book and Tutor Booking platforms.',
+    isCurrent: false,
+  },
+  {
+    role: 'Higher Secondary & Computer Studies',
+    organization: 'Rangpur, Bangladesh',
+    period: '2020 – 2022',
+    description:
+      'Completed academic studies focusing on computer science fundamentals, mathematics, and algorithmic problem solving.',
+    isCurrent: false,
+  },
+];
 
 export default function Experience() {
   // If no verified career history has been supplied, return null to avoid rendering empty or unverified sections

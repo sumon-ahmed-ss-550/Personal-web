@@ -16,8 +16,8 @@ const DownloadCV = () => {
       className="relative"
     >
       <a
-        href="/cv/resume.pdf"
-        download="Sumon_Ahmed_CV.pdf"
+        href="/cv/sumon_resume.pdf"
+        download="Sumon_Ahmed_Resume.pdf"
         aria-label="Download my CV"
         className="group relative flex items-center gap-3 px-8 py-4 bg-brand-dark/40 backdrop-blur-md text-foreground font-bold rounded-xl border border-white/10 transition-all duration-300 shadow-xl hover:shadow-brand-primary/20 hover:border-brand-primary/30 overflow-hidden"
       >

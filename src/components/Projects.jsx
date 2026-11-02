@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { categories, projects } from '@/data/projects';
+import { playTick, playPop } from '@/utils/audio';
 
 export default function Projects() {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -20,6 +21,7 @@ export default function Projects() {
 
   // Open modal and preserve trigger element reference for focus return
   const handleOpenDetails = (project, event) => {
+    playPop();
     triggerRef.current = event.currentTarget;
     setSelectedProject(project);
   };
@@ -127,7 +129,10 @@ export default function Projects() {
               <button
                 key={category}
                 type="button"
-                onClick={() => setActiveCategory(category)}
+                onClick={() => {
+                  playTick();
+                  setActiveCategory(category);
+                }}
                 aria-pressed={activeCategory === category}
                 className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border ${
                   activeCategory === category

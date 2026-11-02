@@ -3,58 +3,75 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
-
-const colors = [
-  { name: 'Electric Indigo', value: '#6366f1', light: '#818cf8' },
-  { name: 'Cyber Cyan', value: '#06b6d4', light: '#22d3ee' },
-  { name: 'Emerald Signal', value: '#10b981', light: '#34d399' },
-  { name: 'Solar Amber', value: '#f59e0b', light: '#fbbf24' },
-  { name: 'Neon Rose', value: '#f43f5e', light: '#fb7185' },
-  { name: 'Violet Pulse', value: '#8b5cf6', light: '#a78bfa' },
-];
+import { ACCENT_PRESETS, applyAccentColor, hexToRgb, getAccentColor } from '@/utils/theme';
 
 export default function ThemeCustomizer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeColor, setActiveColor] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('accentColor') || colors[0].value;
-    }
-    return colors[0].value;
-  });
-  const [customColor, setCustomColor] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('accentColor') || colors[0].value;
-    }
-    return colors[0].value;
-  });
+  const [copiedTokens, setCopiedTokens] = useState(false);
+  const [activeColor, setActiveColor] = useState(getAccentColor);
+  const [customColor, setCustomColor] = useState(getAccentColor);
 
-  const hexToRgb = (hex) => {
-    if (!hex || !hex.startsWith('#') || hex.length < 7) return '99, 102, 241';
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `${r}, ${g}, ${b}`;
-  };
+  // Synchronize with external changes (e.g. from Terminal CLI)
+  useEffect(() => {
+    const handleColorEvent = (e) => {
+      const nextColor = e.detail || getAccentColor();
+      setActiveColor(nextColor);
+      setCustomColor(nextColor);
+    };
+
+    window.addEventListener('accentcolorchange', handleColorEvent);
+    window.addEventListener('storage', handleColorEvent);
+
+    return () => {
+      window.removeEventListener('accentcolorchange', handleColorEvent);
+      window.removeEventListener('storage', handleColorEvent);
+    };
+  }, []);
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.style.setProperty('--primary', activeColor);
-    root.style.setProperty('--primary-rgb', hexToRgb(activeColor));
-    const matched = colors.find((c) => c.value === activeColor);
-    root.style.setProperty('--primary-light', matched?.light || activeColor);
+    applyAccentColor(activeColor);
   }, [activeColor]);
 
   const updateTheme = (colorObj) => {
     setActiveColor(colorObj.value);
     setCustomColor(colorObj.value);
-    localStorage.setItem('accentColor', colorObj.value);
+    applyAccentColor(colorObj.value);
   };
 
   const handleCustomColor = (e) => {
     const val = e.target.value;
     setActiveColor(val);
     setCustomColor(val);
-    localStorage.setItem('accentColor', val);
+    applyAccentColor(val);
+  };
+
+  const handleExportTokens = async () => {
+    const matched = ACCENT_PRESETS.find((c) => c.value === activeColor);
+    const lightVal = matched?.light || activeColor;
+    const rgbVal = hexToRgb(activeColor);
+
+    const tokenSnippet = `/* Obsidian Craft Theme Tokens */
+:root {
+  --primary: ${activeColor};
+  --primary-rgb: ${rgbVal};
+  --primary-light: ${lightVal};
+}
+
+/* Tailwind CSS v4 Theme */
+@theme {
+  --color-brand-primary: ${activeColor};
+  --color-primary: ${activeColor};
+}`;
+
+    try {
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(tokenSnippet);
+        setCopiedTokens(true);
+        setTimeout(() => setCopiedTokens(false), 2200);
+      }
+    } catch {
+      // fallback
+    }
   };
 
   useEffect(() => {
@@ -111,15 +128,15 @@ export default function ThemeCustomizer() {
             <div className="space-y-5 md:space-y-6">
               <div>
                 <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 md:mb-4">Accent Color</p>
-                <div className="grid grid-cols-3 gap-2 md:gap-3">
-                  {colors.map((color) => (
+                <div className="grid grid-cols-4 gap-2 md:gap-3">
+                  {ACCENT_PRESETS.map((color) => (
                     <motion.button
                       key={color.name}
                       onClick={() => updateTheme(color)}
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
                       className={`w-9 h-9 md:w-10 md:h-10 rounded-full border-2 transition-all ${
-                        activeColor === color.value ? 'border-white scale-110' : 'border-transparent'
+                        activeColor.toLowerCase() === color.value.toLowerCase() ? 'border-white scale-110' : 'border-transparent'
                       }`}
                       style={{ backgroundColor: color.value, boxShadow: `0 0 10px ${color.value}44` }}
                       title={color.name}
@@ -145,6 +162,21 @@ export default function ThemeCustomizer() {
                     className="bg-transparent border-none text-xs md:text-sm font-mono text-white focus:outline-none w-full"
                   />
                 </div>
+              </div>
+
+              {/* Export Theme Tokens Action */}
+              <div>
+                <button
+                  type="button"
+                  onClick={handleExportTokens}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/5 transition-all text-xs font-medium"
+                >
+                  {copiedTokens ? (
+                    <span className="text-emerald-400 font-semibold">CSS Tokens Copied!</span>
+                  ) : (
+                    <span>Export CSS Tokens</span>
+                  )}
+                </button>
               </div>
 
               <div className="pt-3 md:pt-4 border-t border-white/5">
