@@ -211,7 +211,7 @@ export default function Hero() {
               />
               <div className="relative w-full h-full rounded-3xl overflow-hidden border border-border bg-surface shadow-2xl">
                 <Image
-                  src="/img/natural.png"
+                  src="/img/sumon.png"
                   alt="Sumon Ahmed portrait"
                   width={420}
                   height={420}
