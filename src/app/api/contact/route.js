@@ -4,6 +4,16 @@ import { Resend } from 'resend';
 // Regular expression for RFC 5322 compliant email validation
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Sanitize user inputs for safe HTML email rendering
+const escapeHtml = (str) => {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+};
+
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -63,50 +73,139 @@ export async function POST(request) {
       );
     }
 
-    // 4. Dispatch email via Resend
+    // 4. Dispatch email via Resend with mobile-first responsive HTML template
     const resend = new Resend(resendApiKey);
 
     const emailSubject = trimmedSubject || `Portfolio Inquiry from ${trimmedName}`;
+    const safeName = escapeHtml(trimmedName);
+    const safeEmail = escapeHtml(trimmedEmail);
+    const safeSubject = escapeHtml(emailSubject);
+    const safeMessage = escapeHtml(trimmedMessage);
+
+    const receivedAt = new Date().toLocaleString('en-US', {
+      timeZone: 'Asia/Dhaka',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
 
     const { data, error } = await resend.emails.send({
       from: senderEmail,
       to: recipientEmail,
       replyTo: trimmedEmail,
       subject: `[Portfolio Inquiry] ${emailSubject} - from ${trimmedName}`,
-      text: `New contact message from portfolio website:\n\nSender Name: ${trimmedName}\nSender Email: ${trimmedEmail}\nSubject: ${emailSubject}\n\nMessage:\n${trimmedMessage}`,
+      text: `New contact message from portfolio website:\n\nSender Name: ${trimmedName}\nSender Email: ${trimmedEmail}\nSubject: ${emailSubject}\nReceived: ${receivedAt} (GMT+6)\n\nMessage:\n${trimmedMessage}\n\n---\nReply directly to this email to contact ${trimmedName}.`,
       html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
-          <div style="background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%); padding: 24px; color: #ffffff;">
-            <h2 style="margin: 0; font-size: 20px; font-weight: 700;">New Message from Portfolio</h2>
-            <p style="margin: 6px 0 0; font-size: 14px; opacity: 0.9;">A visitor submitted a message via your website contact form</p>
-          </div>
-          <div style="padding: 24px; color: #1e293b;">
-            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
-              <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
-                <tr>
-                  <td style="padding: 6px 0; color: #64748b; width: 110px; font-weight: 600;">Sender Name:</td>
-                  <td style="padding: 6px 0; color: #0f172a; font-weight: 600;">${trimmedName}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Sender Email:</td>
-                  <td style="padding: 6px 0;"><a href="mailto:${trimmedEmail}" style="color: #2563eb; text-decoration: none; font-weight: 600;">${trimmedEmail}</a></td>
-                </tr>
-                <tr>
-                  <td style="padding: 6px 0; color: #64748b; font-weight: 600;">Subject:</td>
-                  <td style="padding: 6px 0; color: #0f172a;">${emailSubject}</td>
-                </tr>
-              </table>
-            </div>
-            <div style="margin-bottom: 24px;">
-              <h3 style="font-size: 15px; font-weight: 600; color: #0f172a; margin: 0 0 10px 0;">Message:</h3>
-              <div style="background-color: #f1f5f9; padding: 16px; border-radius: 8px; font-size: 14px; line-height: 1.6; color: #334155; white-space: pre-wrap;">${trimmedMessage}</div>
-            </div>
-            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0 16px 0;" />
-            <p style="font-size: 12px; color: #64748b; margin: 0; line-height: 1.5;">
-              💡 <strong>Direct Reply:</strong> Click <strong>Reply</strong> in your Gmail / email app to respond directly to <strong>${trimmedName}</strong> at <strong>${trimmedEmail}</strong>.
-            </p>
-          </div>
-        </div>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>New Message from ${safeName}</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f1f5f9; padding: 20px 10px;">
+            <tr>
+              <td align="center">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 580px; width: 100%; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); border: 1px solid #e2e8f0;">
+                  
+                  <!-- Branded Obsidian & Indigo Gradient Header -->
+                  <tr>
+                    <td style="background: linear-gradient(135deg, #09090b 0%, #1e1b4b 60%, #312e81 100%); padding: 26px 22px; color: #ffffff;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td>
+                            <span style="display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #a5b4fc; background-color: rgba(255, 255, 255, 0.12); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.18);">
+                              Portfolio Inquiry
+                            </span>
+                            <h1 style="margin: 10px 0 4px 0; font-size: 20px; font-weight: 800; letter-spacing: -0.02em; color: #ffffff; line-height: 1.3;">
+                              New Message Received
+                            </h1>
+                            <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.4;">
+                              A visitor submitted a message via your portfolio website
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Card Body -->
+                  <tr>
+                    <td style="padding: 22px 20px;">
+                      
+                      <!-- Sender Details Box (Mobile-friendly stacked rows) -->
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 20px; overflow: hidden;">
+                        <tr>
+                          <td style="padding: 16px;">
+                            
+                            <!-- Sender Name -->
+                            <div style="margin-bottom: 12px;">
+                              <span style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; margin-bottom: 3px;">
+                                Sender Name
+                              </span>
+                              <span style="display: block; font-size: 16px; font-weight: 700; color: #0f172a; word-break: break-word;">
+                                ${safeName}
+                              </span>
+                            </div>
+
+                            <!-- Sender Email -->
+                            <div style="margin-bottom: 12px;">
+                              <span style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; margin-bottom: 3px;">
+                                Sender Email
+                              </span>
+                              <a href="mailto:${safeEmail}" style="display: inline-block; font-size: 14px; font-weight: 600; color: #4f46e5; text-decoration: none; word-break: break-all;">
+                                ${safeEmail}
+                              </a>
+                            </div>
+
+                            <!-- Subject -->
+                            <div>
+                              <span style="display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #64748b; margin-bottom: 3px;">
+                                Subject
+                              </span>
+                              <span style="display: block; font-size: 14px; font-weight: 600; color: #334155; word-break: break-word;">
+                                ${safeSubject}
+                              </span>
+                            </div>
+
+                          </td>
+                        </tr>
+                      </table>
+
+                      <!-- Message Box -->
+                      <div style="margin-bottom: 22px;">
+                        <span style="display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #475569; margin-bottom: 8px;">
+                          Message
+                        </span>
+                        <div style="background-color: #ffffff; border-left: 4px solid #6366f1; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; border-radius: 0 12px 12px 0; padding: 16px 18px; font-size: 15px; line-height: 1.65; color: #1e293b; white-space: pre-wrap; word-break: break-word;">${safeMessage}</div>
+                      </div>
+
+                      <!-- One-Tap Direct Reply Action Button -->
+                      <div style="margin-bottom: 20px;">
+                        <a href="mailto:${safeEmail}?subject=Re:%20${encodeURIComponent(emailSubject)}" style="display: block; width: 100%; box-sizing: border-box; background: #6366f1; background-image: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #ffffff !important; text-align: center; padding: 14px 20px; border-radius: 12px; font-weight: 700; font-size: 14px; text-decoration: none; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">
+                          Reply to ${safeName} &rarr;
+                        </a>
+                      </div>
+
+                      <!-- Footer Notice -->
+                      <div style="border-top: 1px solid #e2e8f0; padding-top: 14px; text-align: center;">
+                        <p style="margin: 0; font-size: 11px; color: #94a3b8; line-height: 1.5;">
+                          Received on ${receivedAt} (GMT+6) · Sent via Sumon Ahmed Portfolio Contact Form
+                        </p>
+                      </div>
+
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+        </html>
       `,
     });
 
