@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 
 export default function Hero() {
   const [copied, setCopied] = useState(false);
-  const email = 'md20sumon25@gmail.com';
+  const email = 'md20sumon25ahmed@gmail.com';
 
   const handleCopyEmail = async () => {
     try {
@@ -149,7 +149,7 @@ export default function Hero() {
                   </svg>
                 </a>
                 <a
-                  href="mailto:md20sumon25@gmail.com"
+                  href="mailto:md20sumon25ahmed@gmail.com"
                   aria-label="Email Sumon Ahmed"
                   className="w-10 h-10 rounded-xl bg-surface/60 border border-border flex items-center justify-center text-text-muted hover:text-brand-primary hover:border-brand-primary/40 transition-all shadow-sm"
                 >

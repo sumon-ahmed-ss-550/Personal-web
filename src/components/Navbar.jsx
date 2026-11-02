@@ -296,7 +296,7 @@ export default function Navbar() {
                 GitHub
               </a>
               <a
-                href="mailto:md20sumon25@gmail.com"
+                href="mailto:md20sumon25ahmed@gmail.com"
                 className="text-foreground/40 hover:text-brand-primary transition-colors"
                 onClick={() => setIsOpen(false)}
               >

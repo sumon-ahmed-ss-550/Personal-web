@@ -75,7 +75,7 @@ export default function Contact() {
             `From: ${formData.name} (${formData.email})\n\n${formData.message}`
           );
           setFallbackMailto(
-            `mailto:md20sumon25@gmail.com?subject=${subject}&body=${body}`
+            `mailto:md20sumon25ahmed@gmail.com?subject=${subject}&body=${body}`
           );
         }
         return;
@@ -99,7 +99,7 @@ export default function Contact() {
         `From: ${formData.name} (${formData.email})\n\n${formData.message}`
       );
       setFallbackMailto(
-        `mailto:md20sumon25@gmail.com?subject=${subject}&body=${body}`
+        `mailto:md20sumon25ahmed@gmail.com?subject=${subject}&body=${body}`
       );
     }
   };
@@ -139,9 +139,9 @@ export default function Contact() {
               <div className="space-y-6">
                 {/* Email Channel */}
                 <a
-                  href="mailto:md20sumon25@gmail.com"
+                  href="mailto:md20sumon25ahmed@gmail.com"
                   className="flex items-center gap-4 p-4 rounded-2xl bg-surface/60 border border-border hover:border-brand-primary/40 transition-all group"
-                  aria-label="Send direct email to md20sumon25@gmail.com"
+                  aria-label="Send direct email to md20sumon25ahmed@gmail.com"
                 >
                   <div className="w-12 h-12 rounded-xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary group-hover:scale-105 transition-transform shrink-0">
                     <svg
@@ -164,7 +164,7 @@ export default function Contact() {
                       Direct Email
                     </p>
                     <p className="text-sm font-bold text-foreground truncate group-hover:text-brand-primary transition-colors">
-                      md20sumon25@gmail.com
+                      md20sumon25ahmed@gmail.com
                     </p>
                   </div>
                 </a>

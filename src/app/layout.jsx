@@ -55,7 +55,7 @@ const jsonLd = {
   "@type": "Person",
   name: "Sumon Ahmed",
   jobTitle: "Front-End & Full Stack Developer",
-  email: "mailto:md20sumon25@gmail.com",
+  email: "mailto:md20sumon25ahmed@gmail.com",
   telephone: "+8801707286766",
   address: {
     "@type": "PostalAddress",
