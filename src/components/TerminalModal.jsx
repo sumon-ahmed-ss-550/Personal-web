@@ -185,13 +185,27 @@ Workflow:   Git, GitHub, WCAG Accessibility, Responsive UI Architecture`,
 
       case 'resume':
       case 'cv':
+        // Generate dynamic filename with current date
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const downloadFilename = `${year}-${month}-${day}_portfolio_resume.pdf`;
+
         newEntries.push({
           type: 'success',
           text: `Opening official resume PDF...
-Direct download: /cv/sumon_resume.pdf`,
+Direct download: /cv/portfolio_resume.pdf`,
         });
         setTimeout(() => {
-          window.open('/cv/sumon_resume.pdf', '_blank');
+          // Create a temporary link to trigger download with custom filename
+          const link = document.createElement('a');
+          link.href = '/cv/portfolio_resume.pdf';
+          link.download = downloadFilename;
+          link.target = '_blank';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
         }, 800);
         break;
 

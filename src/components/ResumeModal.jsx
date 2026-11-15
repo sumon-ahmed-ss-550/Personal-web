@@ -1,11 +1,26 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, ExternalLink, FileText, CheckCircle2 } from 'lucide-react';
 
 export default function ResumeModal({ isOpen, onClose }) {
   const closeButtonRef = useRef(null);
+
+  // Generate dynamic filename with current date
+  const getDownloadFilename = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}_portfolio_resume.pdf`;
+  };
+
+  const [downloadFilename, setDownloadFilename] = useState(getDownloadFilename());
+
+  useEffect(() => {
+    setDownloadFilename(getDownloadFilename());
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -59,8 +74,8 @@ export default function ResumeModal({ isOpen, onClose }) {
 
               <div className="flex items-center gap-3">
                 <a
-                  href="/cv/sumon_resume.pdf"
-                  download="Sumon_Ahmed_Resume.pdf"
+                  href="/cv/portfolio_resume.pdf"
+                  download={downloadFilename}
                   className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-primary hover:bg-brand-secondary text-white text-xs font-bold transition-all shadow-md shadow-brand-primary/20"
                 >
                   <Download className="w-4 h-4" />
@@ -124,7 +139,7 @@ export default function ResumeModal({ isOpen, onClose }) {
               {/* PDF Document Preview Viewer */}
               <div className="relative w-full h-[520px] sm:h-[620px] rounded-2xl overflow-hidden border border-border bg-black/40 flex flex-col shadow-inner">
                 <iframe
-                  src="/cv/sumon_resume.pdf#toolbar=0&navpanes=0"
+                  src="/cv/portfolio_resume.pdf#toolbar=0&navpanes=0"
                   title="Sumon Ahmed Professional Resume Document"
                   className="w-full h-full border-none rounded-xl bg-surface"
                 />
@@ -138,7 +153,7 @@ export default function ResumeModal({ isOpen, onClose }) {
               </span>
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <a
-                  href="/cv/sumon_resume.pdf"
+                  href="/cv/portfolio_resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border text-xs font-semibold text-foreground hover:border-brand-primary/40 transition-colors"
@@ -147,8 +162,8 @@ export default function ResumeModal({ isOpen, onClose }) {
                   <span>Open Full PDF</span>
                 </a>
                 <a
-                  href="/cv/sumon_resume.pdf"
-                  download="Sumon_Ahmed_Resume.pdf"
+                  href="/cv/portfolio_resume.pdf"
+                  download={downloadFilename}
                   className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-secondary text-white text-xs font-bold transition-all shadow-md shadow-brand-primary/20"
                 >
                   <Download className="w-4 h-4" />
