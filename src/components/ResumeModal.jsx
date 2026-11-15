@@ -22,6 +22,27 @@ export default function ResumeModal({ isOpen, onClose }) {
     setDownloadFilename(getDownloadFilename());
   }, [isOpen]);
 
+  // Custom download handler to ensure dynamic filename works in production
+  const handleDownload = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/cv/portfolio_resume.pdf');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = downloadFilename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Fallback to direct link
+      window.open('/cv/portfolio_resume.pdf', '_blank');
+    }
+  };
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -73,14 +94,13 @@ export default function ResumeModal({ isOpen, onClose }) {
               </div>
 
               <div className="flex items-center gap-3">
-                <a
-                  href="/cv/portfolio_resume.pdf"
-                  download={downloadFilename}
+                <button
+                  onClick={handleDownload}
                   className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-primary hover:bg-brand-secondary text-white text-xs font-bold transition-all shadow-md shadow-brand-primary/20"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download PDF</span>
-                </a>
+                </button>
 
                 <button
                   ref={closeButtonRef}
@@ -161,14 +181,13 @@ export default function ResumeModal({ isOpen, onClose }) {
                   <ExternalLink className="w-4 h-4" />
                   <span>Open Full PDF</span>
                 </a>
-                <a
-                  href="/cv/portfolio_resume.pdf"
-                  download={downloadFilename}
+                <button
+                  onClick={handleDownload}
                   className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-brand-primary hover:bg-brand-secondary text-white text-xs font-bold transition-all shadow-md shadow-brand-primary/20"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download PDF</span>
-                </a>
+                </button>
               </div>
             </div>
           </motion.div>

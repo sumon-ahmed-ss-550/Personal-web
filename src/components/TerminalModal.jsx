@@ -197,15 +197,25 @@ Workflow:   Git, GitHub, WCAG Accessibility, Responsive UI Architecture`,
           text: `Opening official resume PDF...
 Direct download: /cv/portfolio_resume.pdf`,
         });
-        setTimeout(() => {
-          // Create a temporary link to trigger download with custom filename
-          const link = document.createElement('a');
-          link.href = '/cv/portfolio_resume.pdf';
-          link.download = downloadFilename;
-          link.target = '_blank';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+        setTimeout(async () => {
+          try {
+            // Fetch the PDF as blob to ensure custom filename works in production
+            const response = await fetch('/cv/portfolio_resume.pdf');
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = downloadFilename;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+          } catch (error) {
+            console.error('Download failed:', error);
+            // Fallback to direct link
+            window.open('/cv/portfolio_resume.pdf', '_blank');
+          }
         }, 800);
         break;
 
